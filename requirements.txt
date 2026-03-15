@@ -1,0 +1,15 @@
+torch
+transformers
+sentence-transformers
+scikit-learn
+pandas
+numpy
+nltk
+fastapi
+uvicorn
+pydantic
+redis
+streamlit
+pytest
+httpx
+python-dotenv

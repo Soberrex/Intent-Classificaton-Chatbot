@@ -1,0 +1,35 @@
+FROM python:3.12-slim
+
+WORKDIR /app
+
+# Install system dependencies
+RUN apt-get update && apt-get install -y \
+    gcc \
+    && rm -rf /var/lib/apt/lists/*
+
+# Copy requirements
+COPY requirements.txt .
+
+# Install packages with longer timeout and retries
+RUN pip install --no-cache-dir --timeout 300 --retries 5 \
+    torch --index-url https://download.pytorch.org/whl/cpu
+
+RUN pip install --no-cache-dir --timeout 300 --retries 5 \
+    transformers \
+    fastapi \
+    uvicorn \
+    pydantic \
+    scikit-learn \
+    numpy \
+    pandas \
+    redis
+
+# Copy project files
+COPY src/ ./src/
+COPY api/ ./api/
+COPY models/ ./models/
+COPY data/processed/ ./data/processed/
+
+EXPOSE 8000
+
+CMD ["uvicorn", "api.main:app", "--host", "0.0.0.0", "--port", "8000"]
