@@ -4,7 +4,16 @@ import uuid
 from datetime import datetime
 
 # ── Connect to Redis ─────────────────────────────────────
-r = redis.Redis(host='localhost', port=6379, decode_responses=True)
+import os
+from dotenv import load_dotenv
+load_dotenv()
+
+r = redis.Redis(
+    host=os.getenv('REDIS_HOST', 'localhost'),
+    port=int(os.getenv('REDIS_PORT', 6379)),
+    password=os.getenv('REDIS_PASSWORD', None),
+    decode_responses=True
+)
 
 SESSION_EXPIRY = 3600  # 1 hour
 
