@@ -9,7 +9,8 @@ fastapi
 uvicorn
 pydantic
 redis
-streamlit
 pytest
-httpx
 python-dotenv
+streamlit==1.28.0
+httpx
+altair==4.2.2
