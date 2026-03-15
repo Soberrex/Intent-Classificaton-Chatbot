@@ -77,7 +77,10 @@ if prompt := st.chat_input("Type your message here..."):
                 data = r.json()
                 st.session_state.session_id = data["session_id"]
 
-                response = f"I detected your intent as **{data['intent']}** with **{data['confidence']}%** confidence."
+                if data.get("is_oos"):
+                    response = f"🤷 **Out of scope** — {data['response']}"
+                else:
+                    response = f"I detected your intent as **{data['intent']}** with **{data['confidence']}%** confidence."
                 st.markdown(response)
 
                 col1, col2 = st.columns(2)

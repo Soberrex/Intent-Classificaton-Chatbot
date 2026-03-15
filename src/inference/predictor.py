@@ -6,10 +6,6 @@ import warnings
 warnings.filterwarnings("ignore")
 os.environ["TF_ENABLE_ONEDNN_OPTS"] = "0"
 
-MIN_TEXT_LENGTH = 2
-MAX_TEXT_LENGTH = 200
-CONFIDENCE_THRESHOLD = 15.0  # below this = low confidence warning
-
 from pathlib import Path
 from transformers import AutoTokenizer, AutoModelForSequenceClassification
 
@@ -19,6 +15,13 @@ MODEL_PATH   = str(BASE_DIR / "models" / "bert-intent-model")
 ENCODER_PATH = str(BASE_DIR / "data" / "processed" / "label_encoder.pkl")
 MAX_LEN      = 64
 DEVICE       = torch.device("cpu")
+
+# ── Constants ────────────────────────────────────────────
+MIN_TEXT_LENGTH      = 2
+MAX_TEXT_LENGTH      = 200
+CONFIDENCE_THRESHOLD = 10.0
+OOS_INTENT           = "oos"
+OOS_RESPONSE         = "I'm not sure I understand that. Could you rephrase or ask me something banking related?"
 
 print("Loading model from:", MODEL_PATH)
 
@@ -75,13 +78,21 @@ def predict(text: str) -> dict:
 
     is_low_confidence = confidence_score < CONFIDENCE_THRESHOLD
 
+    if predicted_label == OOS_INTENT or is_low_confidence:
+        predicted_label = "out_of_scope"
+        is_oos = True
+    else:
+        is_oos = False
+
     return {
         "input_text":        text,
         "cleaned_text":      cleaned,
         "intent":            predicted_label,
         "confidence":        confidence_score,
         "top3":              top3,
-        "is_low_confidence": is_low_confidence
+        "is_low_confidence": is_low_confidence,
+        "is_oos":            is_oos,
+        "response":          OOS_RESPONSE if is_oos else f"I detected your intent as {predicted_label}"
     }
 
 # ── Quick test ───────────────────────────────────────────
@@ -103,4 +114,6 @@ if __name__ == "__main__":
         print(f"\nInput:      {result['input_text']}")
         print(f"Intent:     {result['intent']}")
         print(f"Confidence: {result['confidence']}%")
+        print(f"Is OOS:     {result['is_oos']}")
+        print(f"Response:   {result['response']}")
         print(f"Top 3:      {[(r['intent'], r['confidence']) for r in result['top3']]}")

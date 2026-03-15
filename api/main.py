@@ -9,6 +9,7 @@ from fastapi import FastAPI, HTTPException
 from fastapi.middleware.cors import CORSMiddleware
 from pydantic import BaseModel
 from contextlib import asynccontextmanager
+from typing import Optional
 
 sys.path.append(str(Path(__file__).resolve().parent.parent))
 from src.inference.predictor import predict, label_encoder
@@ -38,8 +39,6 @@ app.add_middleware(
 )
 
 # ── Models ───────────────────────────────────────────────
-from typing import Optional
-
 class PredictRequest(BaseModel):
     text:       str
     session_id: Optional[str] = None
@@ -57,6 +56,8 @@ class PredictResponse(BaseModel):
     top3:              list[IntentResult]
     last_intent:       Optional[str] = None
     is_low_confidence: bool = False
+    is_oos:            bool = False
+    response:          str = ""
 
 # ── Routes ───────────────────────────────────────────────
 @app.get("/")
@@ -114,7 +115,9 @@ def predict_intent(request: PredictRequest):
         confidence=result["confidence"],
         top3=[IntentResult(**r) for r in result["top3"]],
         last_intent=last_intent,
-        is_low_confidence=result["is_low_confidence"]
+        is_low_confidence=result["is_low_confidence"],
+        is_oos=result["is_oos"],
+        response=result["response"]
     )
 
 @app.get("/history/{session_id}")
