@@ -43,7 +43,7 @@ pip install -r requirements.txt
 
 ### 3 — Download the model
 Download the trained model from Hugging Face:
-👉 [Model Link] (coming soon)
+👉 [RexTheSlasher/intent-classifier-bert](https://huggingface.co/RexTheSlasher/intent-classifier-bert)
 
 Place it at: `models/bert-intent-model/`
 
