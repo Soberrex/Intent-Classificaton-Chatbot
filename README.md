@@ -68,7 +68,7 @@ streamlit run streamlit_app/app.py
 | **Combined** | **227** | **17,553** |
 
 ## 🔗 Live Demo
-👉 [Live Demo Link] (coming soon)
+👉 [Live Demo](https://intent-classificaton-chatbot.streamlit.app/)
 
 ## 📓 Training
 See `notebooks/` for complete data preparation and model training pipeline.
