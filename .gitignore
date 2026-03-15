@@ -141,3 +141,4 @@ models/bert-intent-model/
 *.json
 .streamlit/
 *.safetensors
+hf_deployment/

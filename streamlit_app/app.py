@@ -1,7 +1,7 @@
 import streamlit as st
 import httpx
 
-API_URL = "http://127.0.0.1:8000"
+API_URL = "https://rextheslasher-intent-chatbot-api.hf.space"
 
 st.set_page_config(
     page_title="Intent Classification Chatbot",
